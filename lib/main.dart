@@ -26,6 +26,7 @@ class SegundaTela extends StatelessWidget {
   final String varName;
   final TextEditingController controller = TextEditingController();
 
+
   @override
   Widget build(BuildContext context) {
     //final varName = ModalRoute.of(context)!.settings.arguments as String;
@@ -58,13 +59,39 @@ class SegundaTela extends StatelessWidget {
   }
 }
 
-class PrimeiraTela extends StatelessWidget {
+class PrimeiraTela extends StatefulWidget {
   const PrimeiraTela({super.key});
 
-  Future <void> navegaTela2(BuildContext context) async {
-    var result  = await Navigator.pushNamed(context, "/inserirDadosX" /*, arguments: "X"*/);
+  @override
+  State<PrimeiraTela> createState() => _PrimeiraTelaState();
+}
 
-    print(result);
+class _PrimeiraTelaState extends State<PrimeiraTela> {
+
+  Future <void> navegaTela2(BuildContext context, String rota) async {
+    var result  = await Navigator.pushNamed(context, rota /*, arguments: "X"*/);
+    if (!mounted) return;
+    setState(() {
+      if (rota == "/inserirDadosX"){
+        valorX = result as int;
+      }else{
+        valorY = result as int;
+      }
+    });
+
+  }
+
+  late int valorX;
+  late int valorY;
+  late int resultado;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    valorX = 0;
+    valorY = 0;
+    resultado = 0;
   }
 
   @override
@@ -75,24 +102,28 @@ class PrimeiraTela extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text("X"),
+              Text("X = $valorX"),
               TextButton(
-                onPressed: () => navegaTela2(context),
+                onPressed: () => navegaTela2(context, "/inserirDadosX") ,
                 child: Text("Informar X"),
               ),
             ],
           ),
           Row(
             children: [
-              Text("Y"),
+              Text("Y = $valorY"),
               TextButton(
-                onPressed: () => Navigator.pushNamed(context, "/inserirDadosY"),
+                onPressed: () => navegaTela2(context, "/inserirDadosY"),
                 child: Text("Informar Y"),
               ),
             ],
           ),
-          TextButton(onPressed: null, child: Text("Calcular")),
-          Text("Resultado"),
+          TextButton(onPressed: () => {
+            setState(() {
+              resultado = valorX + valorY;
+            })
+          } , child: Text("Calcular")),
+          Text("Resultado = $resultado"),
         ],
       ),
     );
